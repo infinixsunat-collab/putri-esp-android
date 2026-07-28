@@ -37,7 +37,7 @@ int Bind() {
     memset(&addr_server, 0, sizeof(addr_server));
     addr_server.sun_family = AF_UNIX; // Unix Domain instead of AF_INET IP domain
     strncpy(addr_server.sun_path, socket_name, sizeof(addr_server.sun_path) - 1); // 108 char max
-    int amit = bind(sock, (struct sockaddr *) &addr_server, sizeof(addr_server));
+    int amit = ::bind(sock, (struct sockaddr *) &addr_server, sizeof(addr_server));
     if (amit < 0) {
         Close();
         return 0;
