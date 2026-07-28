@@ -80,6 +80,7 @@ static size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb, voi
 }
 
 jstring native_Check(JNIEnv *env, jclass clazz, jobject mContext, jstring mUserKey) {
+    bValid = false;
     auto userKey = env->GetStringUTFChars(mUserKey, 0);
 
     std::string hwid = userKey;
