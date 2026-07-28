@@ -10,7 +10,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      # SDK manager butuh JDK 17+
       - name: Setup Java 17 (for SDK manager)
         uses: actions/setup-java@v4
         with:
@@ -26,20 +25,19 @@ jobs:
           echo "sdk.dir=$ANDROID_HOME" > local.properties
           echo "ndk.dir=$ANDROID_HOME/ndk/21.0.6113669" >> local.properties
       
-      # Gradle 6.5 butuh JDK 11/13/15 (max)
       - name: Setup Java 11 (for Gradle)
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 11
       
-      - name: Build APK
+      - name: Build APK (Debug - auto signed)
         run: |
           chmod +x gradlew
-          ./gradlew assembleRelease --no-daemon
+          ./gradlew assembleDebug --no-daemon
       
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: PUTRI-ESP-Mod-APK
-          path: app/build/outputs/apk/release/*.apk
+          path: app/build/outputs/apk/debug/*.apk
