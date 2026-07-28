@@ -10,4 +10,3 @@ local.properties
 *.apk
 *.aab
 .DS_Store
-.github/workflows/
