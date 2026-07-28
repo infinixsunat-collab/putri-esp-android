@@ -30,10 +30,8 @@ android {
         }
     }
     externalNativeBuild {
-        cmake {
-        //if use cmake not work to compile cpp, u must create android.mk in folder cpp
+        ndkBuild {
             path "src/main/jni/Android.mk"
-            version "3.10.2"
         }
     }
     ndkVersion '21.0.6113669'
