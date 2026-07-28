@@ -35,6 +35,45 @@ std::string Tools::CalcHMAC(const std::string& key, const std::string& data) {
     return out;
 }
 
+std::string Tools::DecryptString(const unsigned char* data, size_t len, unsigned char key) {
+    std::string result;
+    result.reserve(len);
+    for (size_t i = 0; i < len; i++) {
+        result += (char)(data[i] ^ key);
+    }
+    return result;
+}
+
+uint32_t Tools::CalcCRC32(const unsigned char* data, size_t len) {
+    uint32_t crc = 0xFFFFFFFF;
+    for (size_t i = 0; i < len; i++) {
+        crc ^= data[i];
+        for (int j = 0; j < 8; j++) {
+            if (crc & 1)
+                crc = (crc >> 1) ^ 0xEDB88320;
+            else
+                crc >>= 1;
+        }
+    }
+    return ~crc;
+}
+
+uint64_t Tools::CalcXOR64(const unsigned char* data, size_t len) {
+    uint64_t result = 0;
+    size_t i = 0;
+    for (; i + 8 <= len; i += 8) {
+        uint64_t val;
+        memcpy(&val, data + i, 8);
+        result ^= val;
+    }
+    if (i < len) {
+        uint64_t val = 0;
+        memcpy(&val, data + i, len - i);
+        result ^= val;
+    }
+    return result;
+}
+
 std::string Tools::CalcSHA256(std::string s) {
     std::string result;
 

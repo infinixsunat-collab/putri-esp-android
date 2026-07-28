@@ -36,6 +36,8 @@ import java.io.OutputStream;
 
 public class MainActivity extends Activity { 
 
+    private static native boolean IsVerified();
+
     static {
         System.loadLibrary("Putri");
     }
@@ -52,6 +54,19 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        // LAYER 2 VERIFICATION: Must pass native auth check
+        if (!IsVerified()) {
+            // DEX bypass detected or session invalid
+            new AlertDialog.Builder(this, 5)
+                .setTitle("Security Error")
+                .setMessage("Authentication verification failed.\nPlease re-login.")
+                .setCancelable(false)
+                .setPositiveButton("Exit", (d, w) -> finishAffinity())
+                .show();
+            return;
+        }
+        
         setContentView(R.layout.main);
         loadMain();
 		permissionWindows();

@@ -114,14 +114,26 @@ Java_com_tencent_qq_Overlay_getReady(JNIEnv *, jclass ,int typeofgame) {
     }
 }
 
+// ============================================================
+// JNI REGISTRATION: Init, Check (LoginActivity) + IsVerified (MainActivity)
+// ============================================================
 int Register(JNIEnv *env) {
-    JNINativeMethod methods[] = {{"Init","(Landroid/content/Context;)V",(void *) native_Init},{"Check","(Landroid/content/Context;Ljava/lang/String;)Ljava/lang/String;", (void *) native_Check}};
-    jclass clazz = env->FindClass("com/tencent/qq/LoginActivity");
-    if (!clazz)
-        return -1;
+    // Register LoginActivity methods
+    JNINativeMethod loginMethods[] = {
+        {"Init","(Landroid/content/Context;)V",(void *) native_Init},
+        {"Check","(Landroid/content/Context;Ljava/lang/String;)Ljava/lang/String;", (void *) native_Check}
+    };
+    jclass loginClazz = env->FindClass("com/tencent/qq/LoginActivity");
+    if (!loginClazz) return -1;
+    if (env->RegisterNatives(loginClazz, loginMethods, 2) != 0) return -1;
 
-    if (env->RegisterNatives(clazz, methods, sizeof(methods) / sizeof(methods[0])) != 0)
-        return -1;
+    // Register MainActivity verification method
+    JNINativeMethod mainMethods[] = {
+        {"IsVerified","()Z",(void *) native_IsVerified}
+    };
+    jclass mainClazz = env->FindClass("com/tencent/qq/MainActivity");
+    if (!mainClazz) return -1;
+    if (env->RegisterNatives(mainClazz, mainMethods, 1) != 0) return -1;
 
     return 0;
 }
@@ -129,6 +141,12 @@ int Register(JNIEnv *env) {
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
     JNIEnv *env;
     vm->GetEnv((void **) &env, JNI_VERSION_1_6);
+
+    // Integrity check: verify Register() function hasn't been patched
+    if (!VerifyIntegrity(env)) {
+        LOGE("[SECURITY] Integrity check failed!");
+        return -1;  // Refuse to load if patched
+    }
 
     if (Register(env) != 0)
         return -1;
