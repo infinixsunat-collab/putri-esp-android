@@ -90,6 +90,7 @@ jstring native_Check(JNIEnv *env, jclass clazz, jobject mContext, jstring mUserK
     std::string UUID = GetDeviceUniqueIdentifier(env, hwid.c_str());
 
     std::string errMsg;
+    const std::string SALT = "Vm8Lk7Uj2JmsjCPVPVjrLa7zgfx3uz9E";
 
     struct MemoryStruct chunk{};
     chunk.memory = (char *) malloc(1);
@@ -99,22 +100,29 @@ jstring native_Check(JNIEnv *env, jclass clazz, jobject mContext, jstring mUserK
     CURLcode res;
     curl = curl_easy_init();
     if (curl) {
-		std::string api_key = "putri-esp-server.vercel.app/api/connect";
+        std::string api_key = "putri-esp-server.vercel.app/api/connect";
         curl_easy_setopt(curl, CURLOPT_URL, (api_key.c_str()));
-		curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
-		curl_easy_setopt(curl, CURLOPT_DEFAULT_PROTOCOL, "https");
-		
-		struct curl_slist *headers = NULL;
-		headers = curl_slist_append(headers, "Content-Type: application/x-www-form-urlencoded");
-		
-		curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-		char data[4096];
-		sprintf(data, "game=ROV&user_key=%s&serial=%s", userKey, UUID.c_str());
-		curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);
-		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
-		curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *) &chunk);
-		curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
-		curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
+        curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+        curl_easy_setopt(curl, CURLOPT_DEFAULT_PROTOCOL, "https");
+
+        struct curl_slist *headers = NULL;
+        headers = curl_slist_append(headers, "Content-Type: application/x-www-form-urlencoded");
+
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+
+        // --- HMAC TWO-WAY AUTH ---
+        // Client proves it knows the salt by signing the request
+        std::string clientHmacData = std::string(userKey) + UUID;
+        std::string clientHmac = Tools::CalcHMAC(SALT, clientHmacData);
+
+        char data[4096];
+        sprintf(data, "game=ROV&user_key=%s&serial=%s&hmac=%s",
+                userKey, UUID.c_str(), clientHmac.c_str());
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data);
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *) &chunk);
+        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, 0L);
+        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, 0L);
         res = curl_easy_perform(curl);
         if (res == CURLE_OK) {
             try {
@@ -124,25 +132,37 @@ jstring native_Check(JNIEnv *env, jclass clazz, jobject mContext, jstring mUserK
                     auto DATA = std::string{"data"};
                     auto TOKEN = std::string{"token"};
                     auto RNG = std::string{"rng"};
+                    auto HMAC = std::string{"hmac"};
                     std::string token = result[DATA][TOKEN].get<std::string>();
                     time_t rng = result[DATA][RNG].get<time_t>();
+                    std::string serverHmac = result[DATA][HMAC].get<std::string>();
+
                     if (rng + 30 > time(0)) {
-                        std::string auth = "ROV";
-						auth += std::string("-");
-						auth += userKey;
-						auth += std::string("-");
-						auth += UUID;
-						auth += std::string("-");
-						auth += std::string("Vm8Lk7Uj2JmsjCPVPVjrLa7zgfx3uz9E");                 
-                        std::string outputAuth = Tools::CalcMD5(auth);
-                        g_Token = token;
-                        g_Auth = outputAuth;
-                        bValid = g_Token == g_Auth;
-                        lolo = true;
-                        if (bValid && lolo) {
-                            pthread_t t;
-                            LOGI("putri");
+                        // Verify server HMAC: HMAC(salt, token + rng)
+                        std::string expectedServerHmac = Tools::CalcHMAC(SALT, token + std::to_string(rng));
+
+                        if (serverHmac == expectedServerHmac) {
+                            std::string auth = "ROV";
+                            auth += std::string("-");
+                            auth += userKey;
+                            auth += std::string("-");
+                            auth += UUID;
+                            auth += std::string("-");
+                            auth += SALT;
+                            std::string outputAuth = Tools::CalcMD5(auth);
+                            g_Token = token;
+                            g_Auth = outputAuth;
+                            bValid = g_Token == g_Auth;
+                            lolo = true;
+                            if (bValid && lolo) {
+                                pthread_t t;
+                                LOGI("putri");
+                            }
+                        } else {
+                            errMsg = "Invalid server HMAC";
                         }
+                    } else {
+                        errMsg = "Token expired";
                     }
                 } else {
                     auto REASON = std::string{"reason"};

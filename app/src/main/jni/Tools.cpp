@@ -17,6 +17,24 @@ std::string Tools::CalcMD5(std::string s) {
     return result;
 }
 
+std::string Tools::CalcHMAC(const std::string& key, const std::string& data) {
+    unsigned char result[MD5_DIGEST_LENGTH];
+    unsigned int result_len = 0;
+
+    HMAC(EVP_md5(),
+         key.c_str(), (int)key.length(),
+         (const unsigned char*)data.c_str(), data.length(),
+         result, &result_len);
+
+    char tmp[4];
+    std::string out;
+    for (unsigned int i = 0; i < result_len; i++) {
+        sprintf(tmp, "%02x", result[i]);
+        out += tmp;
+    }
+    return out;
+}
+
 std::string Tools::CalcSHA256(std::string s) {
     std::string result;
 
