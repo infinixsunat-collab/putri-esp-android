@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:gravity="center_horizontal"
+	android:orientation="vertical"
+	android:background="#FF131416">
+
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="fill_parent"
+		android:orientation="vertical">
+
+		<ImageView
+			android:layout_gravity="center"
+			android:layout_width="100.0dip"
+			android:layout_height="100.0dip"
+			android:layout_marginTop="50dip"
+			android:layout_marginBottom="4.0dip"
+			android:src="@drawable/omg"
+			android:id="@+id/logo"/>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="10dp"
+			android:orientation="vertical"
+			android:paddingBottom="0dp"
+			android:paddingRight="30dp"
+			android:paddingLeft="30dp"
+			android:paddingTop="0dp"
+			android:id="@+id/toolsmenu"
+			android:visibility="gone">
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="40dp"
+				android:orientation="horizontal"
+				android:layout_marginBottom="5dp"
+				android:background="@drawable/round"
+				android:padding="5dp"
+				android:gravity="center_vertical">
+
+				<ImageView
+					android:layout_gravity="center"
+					android:layout_width="30dp"
+					android:layout_height="30dp"
+					android:src="@drawable/ic_information"/>
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:textColor="#FFFFFFFF"
+					android:textSize="12sp"
+					android:layout_marginLeft="10dp"
+					android:text="Tools only support root devices"/>
+
+			</LinearLayout>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				android:background="@drawable/round"
+				android:padding="5dp"
+				android:gravity="center_vertical"
+				android:layout_marginBottom="5dp">
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="40dp"
+					android:orientation="horizontal"
+					android:padding="5dp"
+					android:gravity="center_vertical"
+					android:id="@+id/listgl">
+
+					<ImageView
+						android:layout_gravity="center"
+						android:layout_width="30dp"
+						android:layout_height="30dp"
+						android:src="@drawable/global"/>
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:textColor="#FFFFFFFF"
+						android:textSize="15sp"
+						android:layout_marginLeft="10dp"
+						android:textStyle="bold"
+						android:text="FARLIGHT MOBILE"
+						android:layout_weight="1.0"/>
+
+					<ImageView
+						android:layout_gravity="center"
+						android:layout_width="30dp"
+						android:layout_height="30dp"
+						android:src="@drawable/ic_list"/>
+
+				</LinearLayout>
+
+			</LinearLayout>
+
+		</LinearLayout>
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="10dp"
+			android:orientation="vertical"
+			android:paddingBottom="0dp"
+			android:paddingRight="30dp"
+			android:paddingLeft="30dp"
+			android:paddingTop="0dp"
+			android:id="@+id/hackmenu"
+			android:visibility="gone">
+			<LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:orientation="horizontal"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/round"
+                android:padding="5dp"
+                android:gravity="center_vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:orientation="horizontal"
+                    android:background="@drawable/round"
+                    android:padding="5dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_gravity="center"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:id="@+id/icrec"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#FFFFFFFF"
+                        android:textSize="15sp"
+                        android:layout_marginLeft="10dp"
+                        android:textStyle="bold"
+                        android:text="Hide Screen Recorder"
+                        android:layout_weight="1.0"/>
+
+                    <Switch
+                        android:layout_width="wrap_content"
+                        android:thumb="@drawable/ic_switch_off"
+                        android:track="@drawable/ic_switch_on"
+                        android:id="@+id/hiderec"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+			</LinearLayout>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:padding="10dp"
+				android:orientation="horizontal"
+				android:background="@drawable/round"
+				android:layout_marginBottom="5dp">
+
+				<LinearLayout
+					android:layout_width="130dp"
+					android:layout_height="70dp"
+					android:padding="10dp"
+					android:gravity="center_vertical|center_horizontal"
+					android:id="@+id/startButton"
+					android:orientation="horizontal"
+					android:background="@drawable/btn_round"
+					android:layout_weight="1.0"
+					android:layout_marginRight="5dp">
+
+					<ImageView
+						android:layout_gravity="center"
+						android:layout_width="30dp"
+						android:layout_height="30dp"
+						android:src="@drawable/ic_play"/>
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="S T A R T"
+						android:textSize="15sp"
+						android:textStyle="bold"
+						android:id="@+id/txtstart"
+						android:textColor="#FFFFFFFF"
+						android:layout_marginLeft="5dp"/>
+
+				</LinearLayout>
+
+				<LinearLayout
+					android:layout_width="130dp"
+					android:layout_height="70dp"
+					android:padding="10dp"
+					android:gravity="center_vertical|center_horizontal"
+					android:id="@+id/stopButton"
+					android:orientation="horizontal"
+					android:background="@drawable/btn_round"
+					android:layout_weight="1.0"
+					android:layout_marginLeft="5dp">
+
+					<ImageView
+						android:layout_gravity="center"
+						android:layout_width="30dp"
+						android:layout_height="30dp"
+						android:src="@drawable/ic_stop"/>
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="S T O P"
+						android:textSize="15sp"
+						android:textStyle="bold"
+						android:id="@+id/txtstop"
+						android:textColor="#FFFFFFFF"
+						android:layout_marginLeft="5dp"/>
+
+				</LinearLayout>
+
+			</LinearLayout>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="50dp"
+				android:orientation="vertical"
+				android:layout_marginBottom="5dp"
+				android:background="@drawable/round"
+				android:padding="5dp"
+				android:gravity="center_vertical">
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="horizontal"
+					android:gravity="center_vertical">
+
+					<ImageView
+						android:layout_gravity="center"
+						android:layout_width="30dp"
+						android:layout_height="30dp"
+						android:src="@drawable/ic_devices"/>
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="Game Version"
+						android:id="@+id/vertext"
+						android:textColor="#FFFFFFFF"
+						android:textSize="15sp"
+						android:layout_marginLeft="10dp"
+						android:layout_weight="1.0"
+						android:textStyle="bold"/>
+
+					<ImageView
+						android:layout_gravity="center"
+						android:layout_width="30dp"
+						android:layout_height="30dp"
+						android:src="@drawable/ic_android"
+						android:layout_marginLeft="40dp"/>
+
+					<TextView
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:text="Android Version"
+						android:id="@+id/verandro"
+						android:textColor="#FFFFFFFF"
+						android:textSize="15sp"
+						android:layout_marginLeft="10dp"
+						android:layout_weight="1.0"
+						android:textStyle="bold"/>
+
+				</LinearLayout>
+
+			</LinearLayout>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="50dp"
+				android:orientation="horizontal"
+				android:layout_marginBottom="5dp"
+				android:background="@drawable/round"
+				android:padding="5dp"
+				android:gravity="center_vertical">
+
+				<ImageView
+					android:layout_gravity="center"
+					android:layout_width="30dp"
+					android:layout_height="30dp"
+					android:src="@drawable/ic_root"/>
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:textColor="#FFFFFFFF"
+					android:textSize="15sp"
+					android:layout_marginLeft="10dp"
+					android:id="@+id/modeexc"
+					android:textStyle="bold"/>
+
+			</LinearLayout>
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="50dp"
+				android:id="@+id/telegram"
+				android:orientation="horizontal"
+				android:background="@drawable/round"
+				android:padding="5dp"
+				android:gravity="center_vertical">
+
+				<ImageView
+					android:layout_gravity="center"
+					android:layout_width="30dp"
+					android:layout_height="30dp"
+					android:src="@drawable/ic_telegram"/>
+
+				<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Join Telegram"
+					android:textColor="#FFFFFFFF"
+					android:textSize="15sp"
+					android:layout_marginLeft="10dp"
+					android:textStyle="bold"/>
+
+			</LinearLayout>
+
+		</LinearLayout>
+
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="match_parent">
+
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				android:layout_gravity="bottom"
+				android:gravity="center">
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="horizontal"
+					android:gravity="center|center_vertical"
+					android:background="@drawable/menu_round"
+					android:layout_marginRight="30dp"
+					android:layout_marginLeft="30dp"
+					android:layout_marginBottom="20dp">
+				</LinearLayout>
+
+
+				<LinearLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="vertical"
+					android:layout_gravity="bottom"
+					android:gravity="center"
+					android:background="@drawable/round"
+					android:paddingBottom="10dp"
+					android:paddingTop="20dp">
+
+					<TextView
+						android:id="@+id/version_info"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:layout_centerHorizontal="true"
+						android:text="I n j e c t o r   D e v e l o p e r"
+						android:textColor="#ffffff"
+						android:textSize="10dp"/>
+
+					<LinearLayout
+						android:layout_width="match_parent"
+						android:layout_height="wrap_content"
+						android:orientation="horizontal"
+						android:gravity="center|center_vertical">
+
+						<ImageView
+							android:layout_gravity="center"
+							android:layout_width="30dp"
+							android:layout_height="30dp"
+							android:src="@drawable/ic_developer"
+							android:layout_marginRight="5dp"/>
+
+						<TextView
+							android:id="@+id/dev"
+							android:layout_width="wrap_content"
+							android:layout_height="wrap_content"
+							android:layout_centerHorizontal="true"
+							android:textColor="#ffffff"
+							android:textSize="10dp"/>
+
+					</LinearLayout>
+
+				</LinearLayout>
+
+			</LinearLayout>
+
+		</LinearLayout>
+
+	</LinearLayout>
+
+</LinearLayout>
+
+

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tencent.qq">
+	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <!-- modify or delete the contents of your SD card -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+    <!-- ACTION_MANAGE_OVERLAY_PERMISSION -->
+    <uses-permission android:name="android.permission.ACTION_MANAGE_OVERLAY_PERMISSION"/>
+
+	<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+	<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+
+	<uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+
+	<uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <!-- ACCESS_SUPERUSER -->
+    <uses-permission android:name="ACCESS_SUPERUSER"/>
+
+    <!-- have full network access -->
+    <uses-permission android:name="android.permission.INTERNET"/>   
+
+    <!-- MANAGE_EXTERNAL_STORAGE -->
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"/>
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+	
+    <application 
+        android:allowBackup="true"
+        android:icon="@drawable/icon"
+        android:label="@string/app_name"
+        android:roundIcon="@drawable/icon"
+        android:supportsRtl="true"
+		android:requestLegacyExternalStorage="true"
+        android:theme="@style/AppTheme">
+        <activity android:name="com.tencent.qq.LoginActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name="com.tencent.qq.MainActivity"/>
+        <service android:name="com.tencent.qq.Overlay"/>
+        <service android:name="com.tencent.qq.FloatLogo"/>
+    </application>
+
+</manifest>

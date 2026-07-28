@@ -1,0 +1,12 @@
+.gradle/
+build/
+app/build/
+app/src/main/jni/obj/
+app/src/main/obj/
+Daemon/obj/
+Daemon/libs/
+local.properties
+.idea/
+*.apk
+*.aab
+.DS_Store
