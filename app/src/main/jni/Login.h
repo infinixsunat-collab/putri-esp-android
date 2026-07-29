@@ -53,36 +53,42 @@ static const unsigned char ENC_OK[] = {0xe1, 0xe5};
 static const unsigned char ENC_WELCOME[] = {0xf9, 0xcb, 0xc2, 0xcd, 0xc1, 0xc3, 0xcb};
 
 // ============================================================
-// INTEGRITY CHECK — CRC32 of JNI_OnLoad code
+// INTEGRITY CHECK — Runtime anti-tamper verification
 // ============================================================
-// Pre-computed from GitHub Actions build
-// Must be recalculated if JNI_OnLoad changes
-static const unsigned char ENC_JNI_CRC[] = {0xdb, 0x04, 0x75, 0x12}; // XOR(0xBCDBAA75)
-
-extern "C" jint JNI_OnLoad(JavaVM *, void *);
 
 __attribute__((noinline)) static bool VerifyIntegrity(JNIEnv *env) {
-    // Read code of JNI_OnLoad and verify CRC32
-    // This makes it impossible to NOP-patch JNI_OnLoad without detection
-    uintptr_t jniAddr = (uintptr_t)&JNI_OnLoad;
-    // In ARM, function pointer might have thumb bit set (bit 0)
-    jniAddr &= ~1;
-    
-    unsigned char buffer[128] = {0};
-    memcpy(buffer, (void*)jniAddr, 128);
-    
-    uint32_t actualCrc = Tools::CalcCRC32(buffer, 128);
-    
-    // XOR-decrypt expected CRC32
-    uint32_t expectedCrc = 0;
-    for (int i = 0; i < 4; i++) {
-        ((unsigned char*)&expectedCrc)[i] = ENC_JNI_CRC[i] ^ XOR_KEY;
+    // 1) Anti-debug: check TracerPid
+    FILE *fp = fopen("/proc/self/status", "r");
+    if (fp) {
+        char line[256];
+        while (fgets(line, sizeof(line), fp)) {
+            if (strstr(line, "TracerPid:")) {
+                int pid = 0;
+                sscanf(line, "TracerPid: %d", &pid);
+                if (pid != 0) {
+                    fclose(fp);
+                    LOGE("Debugger detected!");
+                    return false;
+                }
+                break;
+            }
+        }
+        fclose(fp);
     }
     
-    if (actualCrc != expectedCrc) {
-        LOGE("Integrity check FAILED");
-        return false;
+    // 2) Verify JNI_OnLoad hasn't been hooked via LD_PRELOAD
+    //    by checking the actual resolved address vs what dlsym returns
+    void *libHandle = dlopen("libPutri.so", RTLD_NOLOAD | RTLD_LOCAL);
+    if (libHandle) {
+        void *symAddr = dlsym(libHandle, "JNI_OnLoad");
+        if (symAddr && symAddr != (void*)&JNI_OnLoad) {
+            dlclose(libHandle);
+            LOGE("JNI_OnLoad hook detected!");
+            return false;
+        }
+        dlclose(libHandle);
     }
+    
     return true;
 }
 
