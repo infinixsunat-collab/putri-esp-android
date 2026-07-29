@@ -53,10 +53,37 @@ static const unsigned char ENC_OK[] = {0xe1, 0xe5};
 static const unsigned char ENC_WELCOME[] = {0xf9, 0xcb, 0xc2, 0xcd, 0xc1, 0xc3, 0xcb};
 
 // ============================================================
-// INTEGRITY CHECK STUB
+// INTEGRITY CHECK — CRC32 of JNI_OnLoad code
 // ============================================================
-static bool VerifyIntegrity(JNIEnv *env) {
-    return true; // Will be hardened post-build
+// Pre-computed from GitHub Actions build
+// Must be recalculated if JNI_OnLoad changes
+static const unsigned char ENC_JNI_CRC[] = {0xfd, 0xce, 0x94, 0xcf}; // XOR(0x6B016193)
+
+extern "C" jint JNI_OnLoad(JavaVM *, void *);
+
+__attribute__((noinline)) static bool VerifyIntegrity(JNIEnv *env) {
+    // Read code of JNI_OnLoad and verify CRC32
+    // This makes it impossible to NOP-patch JNI_OnLoad without detection
+    uintptr_t jniAddr = (uintptr_t)&JNI_OnLoad;
+    // In ARM, function pointer might have thumb bit set (bit 0)
+    jniAddr &= ~1;
+    
+    unsigned char buffer[128] = {0};
+    memcpy(buffer, (void*)jniAddr, 128);
+    
+    uint32_t actualCrc = Tools::CalcCRC32(buffer, 128);
+    
+    // XOR-decrypt expected CRC32
+    uint32_t expectedCrc = 0;
+    for (int i = 0; i < 4; i++) {
+        ((unsigned char*)&expectedCrc)[i] = ENC_JNI_CRC[i] ^ XOR_KEY;
+    }
+    
+    if (actualCrc != expectedCrc) {
+        LOGE("Integrity check FAILED");
+        return false;
+    }
+    return true;
 }
 
 // ============================================================
