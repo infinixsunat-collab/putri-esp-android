@@ -1,21 +1,54 @@
-# Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+# ============================================================
+# PROGUARD RULES — PUTRI ESP MOD
+# Obfuscate aggressively while keeping native/JNI methods
+# ============================================================
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+# Keep ALL native methods (they're registered via JNI)
+-keepclasseswithmembernames class * {
+    native <methods>;
+}
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+# Keep classes that use native methods (JNI registration targets)
+-keep class com.tencent.qq.LoginActivity { *; }
+-keep class com.tencent.qq.MainActivity { *; }
+-keep class com.tencent.qq.FloatLogo { *; }
+-keep class com.tencent.qq.Overlay { *; }
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# Keep Prefs (SharedPreferences wrapper used by login)
+-keep class com.tencent.qq.Prefs { *; }
+
+# Keep all public classes, methods, fields in our package
+-keep class com.tencent.qq.** { *; }
+
+# Keep serialization / JSON classes
+-keep class com.alibaba.fastjson.** { *; }
+
+# Keep support libraries
+-keep class android.support.v4.** { *; }
+-keep class android.support.v7.** { *; }
+-dontwarn android.support.**
+
+# Keep AndroidX
+-keep class androidx.** { *; }
+-dontwarn androidx.**
+
+# Obfuscate everything else aggressively
+-allowaccessmodification
+-repackageclasses 'z'
+-flattenpackagehierarchy 'z'
+-useuniqueclassmembernames
+-optimizations !code/simplification/arithmetic,!code/simplification/cast,!field/*,!class/merging/*
+
+# Remove debug logs
+-assumenosideeffects class android.util.Log {
+    public static boolean isLoggable(java.lang.String, int);
+    public static int v(...);
+    public static int d(...);
+    public static int i(...);
+    public static int w(...);
+}
+
+# Remove redundant code
+-optimizationpasses 5
+-mergeinterfacesaggressively
+-overloadaggressively
