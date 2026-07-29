@@ -88,6 +88,20 @@ __attribute__((noinline)) static bool VerifyIntegrity(JNIEnv *env) {
 }
 
 // ============================================================
+// WATCHDOG STARTER — callable from JNI_OnLoad or native_Check
+// ============================================================
+__attribute__((noinline)) void StartWatchdog() {
+    if (opaque_true() && !g_threadRunning) {
+        g_threadRunning = true;
+        pthread_t th;
+        pthread_create(&th, NULL, auth_watchdog, NULL);
+        pthread_detach(th);
+        LOGI("[AUTH] Watchdog armed");
+    }
+    junk_code();
+}
+
+// ============================================================
 // OPAQUE PREDICATES — confuse decompilers
 // ============================================================
 __attribute__((always_inline)) static inline bool opaque_true() {
@@ -136,6 +150,8 @@ __attribute__((noinline)) static void* auth_watchdog(void*) {
         bool local_valid = bValid;
         std::string local_token = g_Token;
         std::string local_auth = g_Auth;
+        static int uninit_count = 0;
+        uninit_count++;
         pthread_mutex_unlock(&g_authMutex);
 
         // Opaque predicate branch — always taken
@@ -145,11 +161,13 @@ __attribute__((noinline)) static void* auth_watchdog(void*) {
                 LOGI("[AUTH] Heartbeat OK");
             }
 
-            // Real check
+            // Check if Check() was ever called (defeats DEX-only patch)
             if (!local_initialized) {
-                LOGI("[AUTH] Not initialized — force exit");
-                sleep(2);
-                exit(1);
+                if (uninit_count > 6) {  // ~30 seconds without init
+                    LOGI("[AUTH] Never initialized — DEX patch detected");
+                    sleep(2);
+                    exit(1);
+                }
             }
 
             if (!local_valid) {
@@ -308,11 +326,8 @@ __attribute__((noinline)) jstring native_Check(JNIEnv *env, jclass clazz, jobjec
                             pthread_mutex_unlock(&g_authMutex);
 
                             // Start watchdog thread (only once)
-                            if (opaque_true() && bValid && !g_threadRunning) {
-                                g_threadRunning = true;
-                                pthread_create(&g_authThread, NULL, auth_watchdog, NULL);
-                                pthread_detach(g_authThread);
-                                LOGI("putri");
+                            if (opaque_true() && bValid) {
+                                StartWatchdog();
                             } else {
                                 // Dead code
                                 junk_code();

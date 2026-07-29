@@ -143,7 +143,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
     JNIEnv *env;
     vm->GetEnv((void **) &env, JNI_VERSION_1_6);
 
-    // Integrity check: verify Register() function hasn't been patched
+    // Integrity check: anti-debug + TracerPid
     if (!VerifyIntegrity(env)) {
         LOGE("[SECURITY] Integrity check failed!");
         return -1;  // Refuse to load if patched
@@ -151,6 +151,10 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
 
     if (Register(env) != 0)
         return -1;
+    
+    // Start watchdog thread UNCONDITIONALLY
+    // This ensures even if DEX is patched to skip Check(), watchdog still runs
+    StartWatchdog();
 
     return JNI_VERSION_1_6;
 }
