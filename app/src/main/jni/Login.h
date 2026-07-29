@@ -57,7 +57,7 @@ static const unsigned char ENC_WELCOME[] = {0xf9, 0xcb, 0xc2, 0xcd, 0xc1, 0xc3, 
 // ============================================================
 // Pre-computed from GitHub Actions build
 // Must be recalculated if JNI_OnLoad changes
-static const unsigned char ENC_JNI_CRC[] = {0xfd, 0xce, 0x94, 0xcf}; // XOR(0x6B016193)
+static const unsigned char ENC_JNI_CRC[] = {0xdb, 0x04, 0x75, 0x12}; // XOR(0xBCDBAA75)
 
 extern "C" jint JNI_OnLoad(JavaVM *, void *);
 
