@@ -53,6 +53,13 @@ static const unsigned char ENC_OK[] = {0xe1, 0xe5};
 static const unsigned char ENC_WELCOME[] = {0xf9, 0xcb, 0xc2, 0xcd, 0xc1, 0xc3, 0xcb};
 
 // ============================================================
+// INTEGRITY CHECK STUB
+// ============================================================
+static bool VerifyIntegrity(JNIEnv *env) {
+    return true; // Will be hardened post-build
+}
+
+// ============================================================
 // OPAQUE PREDICATES — confuse decompilers
 // ============================================================
 __attribute__((always_inline)) static inline bool opaque_true() {
