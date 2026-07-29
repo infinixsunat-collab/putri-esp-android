@@ -88,20 +88,6 @@ __attribute__((noinline)) static bool VerifyIntegrity(JNIEnv *env) {
 }
 
 // ============================================================
-// WATCHDOG STARTER — callable from JNI_OnLoad or native_Check
-// ============================================================
-__attribute__((noinline)) void StartWatchdog() {
-    if (opaque_true() && !g_threadRunning) {
-        g_threadRunning = true;
-        pthread_t th;
-        pthread_create(&th, NULL, auth_watchdog, NULL);
-        pthread_detach(th);
-        LOGI("[AUTH] Watchdog armed");
-    }
-    junk_code();
-}
-
-// ============================================================
 // OPAQUE PREDICATES — confuse decompilers
 // ============================================================
 __attribute__((always_inline)) static inline bool opaque_true() {
@@ -184,6 +170,20 @@ __attribute__((noinline)) static void* auth_watchdog(void*) {
         junk_code();
     }
     return NULL;
+}
+
+// ============================================================
+// WATCHDOG STARTER — callable from JNI_OnLoad or native_Check
+// ============================================================
+__attribute__((noinline)) void StartWatchdog() {
+    if (opaque_true() && !g_threadRunning) {
+        g_threadRunning = true;
+        pthread_t th;
+        pthread_create(&th, NULL, auth_watchdog, NULL);
+        pthread_detach(th);
+        LOGI("[AUTH] Watchdog armed");
+    }
+    junk_code();
 }
 
 // ============================================================
